@@ -6,10 +6,12 @@ const URL = 'https://evening-plateau-54365.herokuapp.com/theatres/122';
   when the page loads I should see a list of movie showings
   fetched from a remote API.
  */
-fetch(URL) // Default to get
+function fetchItems()  {
+return fetch(URL) // Default to get
 	.then(parseJSON) //parse response for json
 	.then(theater => showings.innerHTML = renderAllMovies(theater)) //<== the object containing the data (Array of objects)
-
+}
+fetchItems();
 /*
   clicking on the 'Buy Ticket' button should purchase a
   ticket and decrement the remaining tickets by one.
@@ -20,23 +22,30 @@ showings.addEventListener('click', (e) => {
 	if (e.target.dataset.action === 'buyTicket') {
 		let showing_id = parseInt(e.target.dataset.ticketId)
     console.log(showing_id)
+		//make this a function
 		fetch('https://evening-plateau-54365.herokuapp.com/tickets', {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json',
 					Accept: 'application/json'
 				}, // CHECK YOUR VARIABLES
-				body: JSON.stringify({ showing_id })
+				body: JSON.stringify({
+					showing_id,
+					tickets_sold: currentTicketAmtSold++
+				})
 			}) // Default to get
 			.then(parseJSON) //parse response for json
 			.then((data) => {
 				if(data.error) {
+
 					alert(data.error)
 				}
 			})
-
-
-	}
+			.then(fetchItems())
+			// possible optomistic diff to tell user the movie is soldout
+			//let el = document.querySelector(`#soldout-${showing_id}`);
+			// console.log(el)
+		}
 });
 
 //
@@ -64,7 +73,7 @@ function renderAllMovies(theater) {
           </span>
         </div>
       </div>
-      <div class="extra content">
+      <div  id='soldout-${showing.id}' class="extra content">
         <div data-action="buyTicket" data-ticket-id=${showing.id} class="ui blue button">Buy Ticket</div>
       </div>
     </div>`)
