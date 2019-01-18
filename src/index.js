@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // })
         // .then(r => r.json())
         // .then(showingObj => {
-        //   // posting to server in the then so it  pessismistically renders the ticket counter
+        //   // was going to post to server in the then so it would pessismistically renders the ticket counter
         //   console.log(showingObj)
           movieContainer.innerHTML = renderAllMovies()
         // })
